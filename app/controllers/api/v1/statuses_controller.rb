@@ -44,7 +44,7 @@ class Api::V1::StatusesController < ApplicationController
     def set_status
       @status = Status.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        render json: { error: "Article not found" }, status: :not_found
+        render json: { error: "Status with id #{params[:id]} not found" }, status: :not_found
     end
 
     # Sanitize status request params
