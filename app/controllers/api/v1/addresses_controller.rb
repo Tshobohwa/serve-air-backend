@@ -13,10 +13,10 @@ class Api::V1::AddressesController < ApplicationController
   end
 
   # POST api/v1/addresses
-  def post
+  def create
     @address = Address.new(address_params)
     if @address.save
-      render json: { status: 'success', data: { status: @status}}, status: :created
+      render json: { status: 'success', data: { address: @adress}}, status: :created
     else
       render json: {status: 'fail', error: @address.errors}, status: :unprocessable_entity
     end
