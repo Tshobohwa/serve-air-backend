@@ -8,6 +8,10 @@ Bundler.require(*Rails.groups)
 
 module ServeAirBackend
   class Application < Rails::Application
+
+    # Allow the app to use api features
+    config.api_only = true
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 
