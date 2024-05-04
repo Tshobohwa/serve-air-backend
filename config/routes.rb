@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :statuses
       resources :addresses
       resources :routes
+      resources :users
     end
   end
 end
