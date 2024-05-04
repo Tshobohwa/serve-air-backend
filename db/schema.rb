@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_04_101348) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_04_102412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_04_101348) do
     t.integer "current_address_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "creator_id"
+    t.index ["creator_id"], name: "index_packages_on_creator_id"
     t.index ["route_id"], name: "index_packages_on_route_id"
     t.index ["status_id"], name: "index_packages_on_status_id"
   end
@@ -58,6 +60,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_04_101348) do
   add_foreign_key "packages", "addresses", column: "current_address_id"
   add_foreign_key "packages", "routes"
   add_foreign_key "packages", "statuses"
+  add_foreign_key "packages", "users", column: "creator_id"
   add_foreign_key "routes", "addresses", column: "destination_id"
   add_foreign_key "routes", "addresses", column: "origin_id"
   add_foreign_key "users", "addresses"
