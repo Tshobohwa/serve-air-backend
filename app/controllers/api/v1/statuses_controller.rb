@@ -3,34 +3,31 @@ class Api::V1::StatusesController < ApplicationController
 
   # GET /status
   def index
-    @status = Status.all
-    render json: @status
+    @statuses = Status.all
+    render json: { status: "success", data:  { statuses: @statuses}}
   end
 
   # GET /status/1
   def show
-    if !@status
-      render json: {message: "No status with id" + req.params[:id]}, status: :not_found
-    end
-    render json: @status
+    render json: { status: 'success', data: { status: @status}}
   end
 
   # POST /status
   def create
     @status = Status.new(resource_params)
     if @status.save
-      render json: @status, status: :created
+      render json: { status: 'success', data: { status: @status}}, status: :created
     else
-      render json: @status.errors, status: :unprocessable_entity
+      render json: {status: 'fail', error: @status.errors}, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /status/1
   def update
     if @status.update(resource_params)
-      render json: @status
+      render json: {status: 'success', data: { status: @status}}
     else
-      render json: @status.errors, status: :unprocessable_entity
+      render json: {status: 'fail', error: @status.errors}, status: :unprocessable_entity
     end
   end
 
