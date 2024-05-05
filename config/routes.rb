@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :addresses
       resources :routes
       resources :users
+      resources :packages
     end
   end
 end
