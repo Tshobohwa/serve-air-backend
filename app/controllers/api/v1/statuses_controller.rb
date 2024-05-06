@@ -20,6 +20,8 @@ class Api::V1::StatusesController < ApplicationController
     else
       render json: {status: 'fail', error: @status.errors}, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotUnique
+    render json: {status: 'fail', error: {message: "Status #{resource_params[:name]} already exists"}}
   end
 
   # PATCH/PUT /status/1
