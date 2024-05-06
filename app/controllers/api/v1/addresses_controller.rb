@@ -20,6 +20,8 @@ class Api::V1::AddressesController < ApplicationController
     else
       render json: {status: 'fail', error: @address.errors}, status: :unprocessable_entity
     end
+    rescue ActiveRecord::RecordNotUnique
+      render json: {status: 'fail', error: {message: "Address #{address_params[:name]} already exists"}}
   end
 
   # PUT/PATCH api/v1/:id
