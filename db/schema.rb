@@ -10,13 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_06_074337) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_25_155707) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "addresses", force: :cascade do |t|
     t.string "name"
     t.index ["name"], name: "index_addresses_on_name", unique: true
+  end
+
+  create_table "destinations", force: :cascade do |t|
+    t.integer "address_id"
+    t.index ["address_id"], name: "index_destinations_on_address_id", unique: true
+  end
+
+  create_table "origins", force: :cascade do |t|
+    t.integer "address_id"
+    t.index ["address_id"], name: "index_origins_on_address_id", unique: true
   end
 
   create_table "packages", force: :cascade do |t|
@@ -34,12 +44,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_06_074337) do
   end
 
   create_table "routes", force: :cascade do |t|
-    t.integer "origin_id"
-    t.integer "destination_id"
     t.integer "pricing"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["origin_id", "destination_id"], name: "index_routes_on_origin_id_and_destination_id", unique: true
+    t.integer "origin_id"
+    t.integer "destination_id"
+    t.index ["destination_id"], name: "index_routes_on_destination_id"
+    t.index ["origin_id"], name: "index_routes_on_origin_id"
   end
 
   create_table "statuses", force: :cascade do |t|
@@ -59,11 +70,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_06_074337) do
     t.index ["address_id"], name: "index_users_on_address_id"
   end
 
+  add_foreign_key "destinations", "addresses"
+  add_foreign_key "origins", "addresses"
   add_foreign_key "packages", "addresses", column: "current_address_id"
   add_foreign_key "packages", "routes"
   add_foreign_key "packages", "statuses"
   add_foreign_key "packages", "users", column: "creator_id"
-  add_foreign_key "routes", "addresses", column: "destination_id"
-  add_foreign_key "routes", "addresses", column: "origin_id"
+  add_foreign_key "routes", "destinations"
+  add_foreign_key "routes", "origins"
   add_foreign_key "users", "addresses"
 end

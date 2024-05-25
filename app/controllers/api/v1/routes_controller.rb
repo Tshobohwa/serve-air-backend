@@ -2,7 +2,7 @@ class Api::V1::RoutesController < ApplicationController
   before_action :set_route, only: [:show, :destroy, :update ]
   # GET api/v1/routes
   def index
-    @routes = Route.all
+    @routes = Route.includes(:origin, :destination)
     render json: {status: 'success', data: { routes: @routes }}
   end
 
