@@ -3,7 +3,7 @@ class CreateRoutes < ActiveRecord::Migration[7.1]
     create_table :routes do |t|
       t.integer :origin_id
       t.integer :destination_id
-      t.integer :pricing
+      t.decimal :pricing
 
       t.timestamps
     end
