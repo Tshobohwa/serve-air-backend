@@ -41,7 +41,7 @@ class Api::V1::RoutesController < ApplicationController
 
   private
 
-  # Set route from request param i:d
+  # Set route from request param :id
   def set_route
     @route = Route.find(params[:id])
     rescue ActiveRecord::RecordNotFound

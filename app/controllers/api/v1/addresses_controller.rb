@@ -16,6 +16,8 @@ class Api::V1::AddressesController < ApplicationController
   def create
     @address = Address.new(address_params)
     if @address.save
+      Origin.create({address_id: @address.id})
+      Destination.create({address_id: @address.id})
       render json: { status: 'success', data: { address: @address}}, status: :created
     else
       render json: {status: 'fail', error: @address.errors}, status: :unprocessable_entity
