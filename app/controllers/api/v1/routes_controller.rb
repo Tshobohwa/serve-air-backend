@@ -1,5 +1,7 @@
 class Api::V1::RoutesController < ApplicationController
   before_action :set_route, only: [:show, :destroy, :update ]
+  before_action :verify_address_uniquability, only: [:create]
+
   # GET api/v1/routes
   def index
     @routes = Route.includes(:origin, :destination)
@@ -26,9 +28,7 @@ class Api::V1::RoutesController < ApplicationController
     else
       render json: {status: 'fail', error: @route.errors}, status: :unprocessable_entity
     end
-    # rescue ActiveRecord::RecordNotUnique
-    #   render json: {status: 'fail', error: {message: 'Route already exists'}}, status: :unprocessable_entity
-  end
+   end
 
 
   # PUT/PATCH api/v1/:id
@@ -49,8 +49,19 @@ class Api::V1::RoutesController < ApplicationController
       render json: {status: 'fail', error: { message: "Couldn't find route with id #{params[:id]}"}}, status: :not_found
   end
 
-  #Sanitaze request parameters
+  # Sanitaze request parameters
   def route_params
     params.require(:route).permit(:origin_id, :destination_id, :pricing)
+  end
+
+  # Verify if origin and destination addresses are different
+  def verify_address_uniquability
+    origin = Origin.find(route_params[:origin_id])
+    destination = Destination.find(route_params[:destination_id])
+
+    render json: {status: "fail", error: {message: "Origin address is equal to destination address"}} if origin[:address_id] == destination[:address_id]
+
+    rescue ActiveRecord::RecordNotFound
+      render json: {status: "fail", error: {message: "Invalid origin or destination"}}
   end
 end

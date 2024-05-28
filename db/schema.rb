@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_25_155707) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_28_033018) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "addresses", force: :cascade do |t|
-    t.string "name"
-    t.index ["name"], name: "index_addresses_on_name", unique: true
+    t.string "city"
+    t.string "territory"
+    t.string "province"
   end
 
   create_table "destinations", force: :cascade do |t|
@@ -44,12 +45,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_25_155707) do
   end
 
   create_table "routes", force: :cascade do |t|
-    t.integer "pricing"
+    t.decimal "pricing"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "origin_id"
     t.integer "destination_id"
     t.index ["destination_id"], name: "index_routes_on_destination_id"
+    t.index ["origin_id", "destination_id"], name: "index_routes_on_origin_id_and_destination_id", unique: true
     t.index ["origin_id"], name: "index_routes_on_origin_id"
   end
 

@@ -9,7 +9,6 @@ class CreateRoutes < ActiveRecord::Migration[7.1]
     end
     add_foreign_key :routes, :addresses, column: :origin_id
     add_foreign_key :routes, :addresses, column: :destination_id
-    add_index :routes, [:origin_id, :destination_id], unique: true
 
   end
 end
