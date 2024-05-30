@@ -14,6 +14,8 @@ Rails.application.routes.draw do
       resources :routes
       resources :users
       resources :packages
+      resources :origins, only: [:index]
+      resources :destinations, only: [:index]
     end
   end
 end
