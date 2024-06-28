@@ -5,7 +5,7 @@ class Api::V1::RoutesController < ApplicationController
   # GET api/v1/routes
   def index
     @routes = Route.includes(:origin, :destination)
-    render json: {status: 'success', data: { routes: @routes }}
+    render json: { status: 'success', data: { routes: @routes.as_json( include: { origin: { include: :address }, destination: { include: :address } } ) } }
   end
 
   # GET api/v1/routes/:id
@@ -24,7 +24,8 @@ class Api::V1::RoutesController < ApplicationController
     @route = Route.new(route_params)
 
     if @route.save
-      render json: {status: 'success', data: { route: @route}}
+      @new_route = Route.includes(:origin, :destination).where(id: @route[:id])
+      render json: { status: 'success', data: { route: @new_route.as_json( include: { origin: { include: :address }, destination: { include: :address } } ) } }, status: :created
     else
       render json: {status: 'fail', error: @route.errors}, status: :unprocessable_entity
     end
@@ -34,7 +35,8 @@ class Api::V1::RoutesController < ApplicationController
   # PUT/PATCH api/v1/:id
   def update
     if @route.update(route_params)
-      render json: {status: 'success', data: { route: @route}}
+      @new_route = Route.includes(:origin, :destination).find(params[:id])
+      render json: { status: 'success', data: { route: @new_route.as_json( include: { origin: { include: :address }, destination: { include: :address } } ) } }
     else
       render json: {status: 'fail', error: @route.errors}, status: :unprocessable_entity
     end
@@ -59,9 +61,9 @@ class Api::V1::RoutesController < ApplicationController
     origin = Origin.find(route_params[:origin_id])
     destination = Destination.find(route_params[:destination_id])
 
-    render json: {status: "fail", error: {message: "Origin address is equal to destination address"}} if origin[:address_id] == destination[:address_id]
+    render json: {status: "fail", error: {message: "Origin address is equal to destination address"}}, status: :unprocessable_entity if origin[:address_id] == destination[:address_id]
 
     rescue ActiveRecord::RecordNotFound
-      render json: {status: "fail", error: {message: "Invalid origin or destination"}}
+      render json: {status: "fail", error: {message: "Invalid origin or destination"}}, status: :unprocessable_entity
   end
 end
