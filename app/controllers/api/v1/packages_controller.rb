@@ -3,8 +3,40 @@ class Api::V1::PackagesController < ApplicationController
 
   # GET api/v1/packages
   def index
+    address_id = params[:address_id]
+    origin_id = params[:origin_id]
+    destination_id = params[:destination_id]
+
+    if origin_id
+      origin_route = Route.find_by(origin_id: origin_id)
+      @outgoing_packages = origin_route ? Package.where(route_id: origin_route.id) : []
+    else
+      @outgoing_packages = []
+    end
+
+    if destination_id
+      destination_route = Route.find_by(destination_id: destination_id)
+      @incoming_packages = destination_route ? Package.where(route_id: destination_route.id) : []
+    else
+      @incoming_packages = []
+    end
+
+    if address_id
+      @warehouse = Package.where(current_address_id: address_id)
+    else
+      @warehouse = []
+    end
+
     @packages = Package.all
-    render json: { status: 'success', data: { packages: @packages } }
+    render json: {
+      status: 'success',
+      data: {
+        packages: @packages,
+        incoming_packages: @incoming_packages,
+        outgoing_packages: @outgoing_packages,
+        warehouse: @warehouse
+      }
+    }
   end
 
   # GET api/v1/packages/:id
