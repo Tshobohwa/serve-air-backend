@@ -48,10 +48,10 @@ class Api::V1::PackagesController < ApplicationController
   def create
     @package = Package.new(package_params)
     if @package.save
-      render json: { status: 'success', data: { package: @package } }
+      render json: { status: 'success', data: { package: @package } }, status: :created
     else
       logger.debug @package.errors.full_messages
-      render json: { status: 'fail', error: { message: "Couldn't create package", errors: @package.errors.full_messages } }
+      render json: { status: 'fail', error: { message: "Couldn't create package", errors: @package.errors.full_messages } }, status: :bad_request
     end
   end
 

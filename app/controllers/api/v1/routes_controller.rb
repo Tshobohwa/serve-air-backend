@@ -20,7 +20,6 @@ class Api::V1::RoutesController < ApplicationController
 
   # POST api/v1/
   def create
-    puts route_params[:origin_id]
     @route = Route.new(route_params)
 
     if @route.save
@@ -29,7 +28,7 @@ class Api::V1::RoutesController < ApplicationController
     else
       render json: {status: 'fail', error: @route.errors}, status: :unprocessable_entity
     end
-   end
+  end
 
 
   # PUT/PATCH api/v1/:id
@@ -47,8 +46,8 @@ class Api::V1::RoutesController < ApplicationController
   # Set route from request param :id
   def set_route
     @route = Route.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      render json: {status: 'fail', error: { message: "Couldn't find route with id #{params[:id]}"}}, status: :not_found
+  rescue ActiveRecord::RecordNotFound
+    render json: {status: 'fail', error: { message: "Couldn't find route with id #{params[:id]}"}}, status: :not_found
   end
 
   # Sanitaze request parameters
@@ -63,7 +62,7 @@ class Api::V1::RoutesController < ApplicationController
 
     render json: {status: "fail", error: {message: "Origin address is equal to destination address"}}, status: :unprocessable_entity if origin[:address_id] == destination[:address_id]
 
-    rescue ActiveRecord::RecordNotFound
-      render json: {status: "fail", error: {message: "Invalid origin or destination"}}, status: :unprocessable_entity
+  rescue ActiveRecord::RecordNotFound
+    render json: {status: "fail", error: {message: "Invalid origin or destination"}}, status: :unprocessable_entity
   end
 end
