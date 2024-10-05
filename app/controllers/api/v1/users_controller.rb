@@ -41,7 +41,7 @@ class Api::V1::UsersController < ApplicationController
   # Set user with id from request params
   def set_user
     @user = User.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
+  rescue ActiveRecord::RecordNotFound
       render json: {status: 'fail', message: "Couldn't find user with id #{params[:id]}" }, status: :not_found
   end
 
