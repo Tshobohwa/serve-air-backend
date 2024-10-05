@@ -3,6 +3,8 @@ class Package < ApplicationRecord
   belongs_to :route, foreign_key: :route_id
   belongs_to :current_address, class_name: 'Address', foreign_key: :current_address_id
   belongs_to :creator, class_name: 'User', foreign_key: :creator_id
+  belongs_to :origin, class_name: 'Address', foreign_key: :origin_id
+  belongs_to :destination, class_name: 'Address', foreign_key: :destination_id
 
   validates :weight, presence: true, numericality: { greater_than: 0 }
   validates :description, presence: true

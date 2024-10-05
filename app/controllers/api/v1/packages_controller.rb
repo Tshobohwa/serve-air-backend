@@ -1,4 +1,5 @@
 class Api::V1::PackagesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_package, only: [:show, :update, :destroy]
 
   # GET api/v1/packages
@@ -79,6 +80,6 @@ class Api::V1::PackagesController < ApplicationController
   end
 
   def package_params
-    params.require(:package).permit(:weight, :description, :status_id, :route_id, :current_address_id, :creator_id, :sender_name, :sender_phone_number, :receiver_name, :receiver_phone_number, :price)
+    params.require(:shippment).permit(:weight, :description, :status_id, :route_id, :current_address_id, :creator_id, :sender_name, :sender_phone_number, :receiver_name, :receiver_phone_number, :price, :origin_id, :destination_id)
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_05_032256) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_05_115827) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,6 +18,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_05_032256) do
     t.string "city"
     t.string "territory"
     t.string "province"
+    t.index ["city"], name: "index_addresses_on_city", unique: true
   end
 
   create_table "destinations", force: :cascade do |t|
@@ -44,7 +45,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_05_032256) do
     t.string "receiver_name"
     t.string "receiver_phone_number"
     t.decimal "price"
+    t.integer "origin_id"
+    t.integer "destination_id"
     t.index ["creator_id"], name: "index_packages_on_creator_id"
+    t.index ["destination_id"], name: "index_packages_on_destination_id"
+    t.index ["origin_id"], name: "index_packages_on_origin_id"
     t.index ["route_id"], name: "index_packages_on_route_id"
     t.index ["status_id"], name: "index_packages_on_status_id"
   end
@@ -89,6 +94,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_05_032256) do
   add_foreign_key "destinations", "addresses"
   add_foreign_key "origins", "addresses"
   add_foreign_key "packages", "addresses", column: "current_address_id"
+  add_foreign_key "packages", "addresses", column: "destination_id"
+  add_foreign_key "packages", "addresses", column: "origin_id"
   add_foreign_key "packages", "routes"
   add_foreign_key "packages", "statuses"
   add_foreign_key "packages", "users", column: "creator_id"

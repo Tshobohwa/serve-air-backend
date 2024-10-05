@@ -1,4 +1,5 @@
 class Api::V1::StatusesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_status, only: [:show, :update, :destroy]
 
   # GET /status
@@ -42,8 +43,8 @@ class Api::V1::StatusesController < ApplicationController
     # Find status by id
     def set_status
       @status = Status.find(params[:id])
-      rescue ActiveRecord::RecordNotFound
-        render json: { error: "Status with id #{params[:id]} not found" }, status: :not_found
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: "Status with id #{params[:id]} not found" }, status: :not_found
     end
 
     # Sanitize status request params

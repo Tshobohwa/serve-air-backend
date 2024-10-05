@@ -1,10 +1,15 @@
 class Api::V1::RoutesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_route, only: [:show, :destroy, :update ]
   before_action :verify_address_uniquability, only: [:create]
 
   # GET api/v1/routes
   def index
-    @routes = Route.includes(:origin, :destination)
+    if params[:origin_id].present?
+      @routes = Route.where(origin_id: params[:origin_id])
+    else
+      @routes = Route.all
+    end
     render json: { status: 'success', data: { routes: @routes.as_json( include: { origin: { include: :address }, destination: { include: :address } } ) } }
   end
 

@@ -1,4 +1,6 @@
 class Api::V1::AddressesController < ApplicationController
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index]
   before_action :set_address, only: [:show, :update, :destroy]
 
   # GET api/v1/addresses
@@ -22,8 +24,8 @@ class Api::V1::AddressesController < ApplicationController
     else
       render json: {status: 'fail', error: @address.errors}, status: :unprocessable_entity
     end
-    rescue ActiveRecord::RecordNotUnique
-      render json: {status: 'fail', error: {message: "Address #{address_params[:name]} already exists"}}
+  rescue ActiveRecord::RecordNotUnique
+    render json: {status: 'fail', error: {message: "Address #{address_params[:name]} already exists"}}
   end
 
   # PUT/PATCH api/v1/:id
@@ -44,8 +46,8 @@ class Api::V1::AddressesController < ApplicationController
 
   def set_address
     @address = Address.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      render json: { status:"fail", message: "Address with id #{params[:id]} not found"}, status: :not_found
+  rescue ActiveRecord::RecordNotFound
+    render json: { status:"fail", message: "Address with id #{params[:id]} not found"}, status: :not_found
   end
 
   def address_params
