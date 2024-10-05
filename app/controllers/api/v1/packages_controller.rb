@@ -5,63 +5,73 @@ class Api::V1::PackagesController < ApplicationController
   # GET api/v1/packages
   def index
     address_id = params[:address_id]
-    origin_id = params[:origin_id]
-    destination_id = params[:destination_id]
 
-    if origin_id
-      origin_route = Route.find_by(origin_id: origin_id)
-      @outgoing_packages = origin_route ? Package.where(route_id: origin_route.id) : []
-    else
-      @outgoing_packages = []
-    end
 
-    if destination_id
-      destination_route = Route.find_by(destination_id: destination_id)
-      @incoming_packages = destination_route ? Package.where(route_id: destination_route.id) : []
-    else
-      @incoming_packages = []
-    end
+    @warehouse = Package.where(current_address_id: address_id)
 
-    if address_id
-      @warehouse = Package.where(current_address_id: address_id)
-    else
-      @warehouse = []
-    end
+    @outgoing_packages = Package.where(origin_id: address_id)
 
-    @packages = Package.all
+    @incoming_packages = Package.where(destination_id: address_id)
+
     render json: {
       status: 'success',
       data: {
-        packages: @packages,
-        incoming_packages: @incoming_packages,
-        outgoing_packages: @outgoing_packages,
-        warehouse: @warehouse
+        incoming_packages: @incoming_packages.as_json(include: [:origin, :destination, :current_address, :creator, :status]),
+        outgoing_packages: @outgoing_packages.as_json(include: [:origin, :destination, :current_address, :creator, :status]),
+        warehouse: @warehouse.as_json(include: [:origin, :destination, :current_address, :creator, :status])
       }
     }
   end
 
   # GET api/v1/packages/:id
   def show
-    render json: { status: 'success', data: { package: @package } }
+    render json: {
+      status: 'success',
+      data: {
+        package: @package.as_json(include: [:origin, :destination, :current_address, :creator, :status])
+      }
+    }
   end
 
   # POST api/v1/packages
   def create
     @package = Package.new(package_params)
     if @package.save
-      render json: { status: 'success', data: { package: @package } }, status: :created
+      render json: {
+        status: 'success',
+        data: {
+          package: @package.as_json(include: [:origin, :destination, :current_address, :creator, :status])
+        }
+      }, status: :created
     else
       logger.debug @package.errors.full_messages
-      render json: { status: 'fail', error: { message: "Couldn't create package", errors: @package.errors.full_messages } }, status: :bad_request
+      render json: {
+        status: 'fail',
+        error: {
+          message: "Couldn't create package",
+          errors: @package.errors.full_messages
+        }
+      }, status: :bad_request
     end
   end
 
   # PUT/PATCH api/v1/packages/:id
   def update
     if @package.update(package_params)
-      render json: { status: 'success', data: { package: @package } }
+      render json: {
+        status: 'success',
+        data: {
+          package: @package.as_json(include: [:origin, :destination, :current_address, :creator, :status])
+        }
+      }
     else
-      render json: { status: 'fail', error: { message: "Couldn't update package", errors: @package.errors.full_messages } }
+      render json: {
+        status: 'fail',
+        error: {
+          message: "Couldn't update package",
+          errors: @package.errors.full_messages
+        }
+      }
     end
   end
 
