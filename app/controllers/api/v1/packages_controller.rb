@@ -7,11 +7,11 @@ class Api::V1::PackagesController < ApplicationController
     address_id = params[:address_id]
 
 
-    @warehouse = Package.where(current_address_id: address_id)
+    @warehouse = Package.where(current_address_id: address_id).order(created_at: :desc)
 
-    @outgoing_packages = Package.where(origin_id: address_id)
+    @outgoing_packages = Package.where(origin_id: address_id).order(created_at: :desc)
 
-    @incoming_packages = Package.where(destination_id: address_id)
+    @incoming_packages = Package.where(destination_id: address_id).order(created_at: :desc)
 
     render json: {
       status: 'success',
