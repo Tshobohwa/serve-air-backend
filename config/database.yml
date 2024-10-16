@@ -81,8 +81,11 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+
 production:
   <<: *default
-  database: serve_air_backend_production
-  username: serve_air_backend
-  password: <%= ENV["SERVE_AIR_BACKEND_DATABASE_PASSWORD"] %>
+  database: <%= ENV["DATABASE_NAME"] %>
+  username: <%= ENV["DATABASE_USERNAME"] %>
+  password: <%= ENV["DATABASE_PASSWORD"] %>
+  port: <%= ENV["DATABASE_PORT"] %>
+  url: <%= ENV["DATABASE_URL"] %>
